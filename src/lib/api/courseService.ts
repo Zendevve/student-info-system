@@ -1,9 +1,9 @@
 import { supabase } from '../supabase'
 import type { Database } from '../database.types'
 
-type Course = Database['public']['Tables']['courses']['Row']
-type CourseInsert = Database['public']['Tables']['courses']['Insert']
-type CourseUpdate = Database['public']['Tables']['courses']['Update']
+type Course = Database['public']['Tables']['subjects']['Row']
+type CourseInsert = Database['public']['Tables']['subjects']['Insert']
+type CourseUpdate = Database['public']['Tables']['subjects']['Update']
 
 export interface CourseFilters {
   category?: 'Core' | 'Elective' | 'all'
@@ -22,7 +22,7 @@ export interface CourseStats {
  */
 export async function getCourses(filters: CourseFilters = {}) {
   let query = supabase
-    .from('courses')
+    .from('subjects')
     .select('*', { count: 'exact' })
     .order('created_at', { ascending: false })
 
@@ -47,7 +47,7 @@ export async function getCourses(filters: CourseFilters = {}) {
  */
 export async function getCourseById(id: string) {
   const { data, error } = await supabase
-    .from('courses')
+    .from('subjects')
     .select('*')
     .eq('id', id)
     .single()
@@ -61,7 +61,7 @@ export async function getCourseById(id: string) {
  */
 export async function getCourseStats(): Promise<CourseStats> {
   const { data, error } = await supabase
-    .from('courses')
+    .from('subjects')
     .select('category, enrolled_students')
 
   if (error) throw error
@@ -83,7 +83,7 @@ export async function getCourseStats(): Promise<CourseStats> {
  */
 export async function createCourse(course: CourseInsert) {
   const { data, error } = await supabase
-    .from('courses')
+    .from('subjects')
     .insert(course)
     .select()
     .single()
@@ -97,7 +97,7 @@ export async function createCourse(course: CourseInsert) {
  */
 export async function updateCourse(id: string, updates: CourseUpdate) {
   const { data, error } = await supabase
-    .from('courses')
+    .from('subjects')
     .update(updates)
     .eq('id', id)
     .select()
@@ -112,7 +112,7 @@ export async function updateCourse(id: string, updates: CourseUpdate) {
  */
 export async function deleteCourse(id: string) {
   const { error } = await supabase
-    .from('courses')
+    .from('subjects')
     .delete()
     .eq('id', id)
 
