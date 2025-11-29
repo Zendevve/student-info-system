@@ -10,7 +10,7 @@ export const loginPhoneSchema = z.object({
     .string()
     .regex(/^09\d{9}$/, 'Please enter a valid Philippine mobile number (09XXXXXXXXX)'),
   password: z.string().min(6, 'Password must be at least 6 characters').optional(),
-  useOTP: z.boolean().default(false),
+  useOTP: z.boolean().optional(),
 })
 
 export const registerSchema = z.object({

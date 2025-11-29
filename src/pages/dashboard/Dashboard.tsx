@@ -1,42 +1,55 @@
-import { Users, FileText, CheckCircle2, Search, ArrowRight, ClipboardList } from 'lucide-react'
+import { Users, FileText, CheckCircle2, ArrowRight, ClipboardList, GraduationCap, BookOpen } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/store/authStore'
+import { useStudentStats } from '@/lib/query/hooks/useStudents'
+import { useCourseStats } from '@/lib/query/hooks/useCourses'
+import { useEnrollmentStats, useEnrollments } from '@/lib/query/hooks/useEnrollments'
+import { formatDistanceToNow } from 'date-fns'
 
 export default function Dashboard() {
   const { user, profile } = useAuthStore()
 
+  // Fetch real stats
+  const { data: studentStats } = useStudentStats()
+  const { data: courseStats } = useCourseStats()
+  const { data: enrollmentStats } = useEnrollmentStats()
+
+  // Fetch pending enrollments for "Incoming Applications"
+  const { data: pendingEnrollments } = useEnrollments({ status: 'pending' })
+
   const stats = [
     {
       icon: Users,
-      label: 'Total Users',
-      value: '21',
+      label: 'Total Students',
+      value: studentStats?.total.toString() || '0',
       status: 'Active',
       statusColor: 'text-success-600 bg-success-50',
       iconBg: 'bg-primary-100 text-primary-600',
     },
     {
-      icon: FileText,
-      label: 'Total Applications',
-      value: '90',
-      status: 'All Time',
+      icon: BookOpen,
+      label: 'Total Courses',
+      value: courseStats?.totalCourses.toString() || '0',
+      status: 'Offered',
       statusColor: 'text-primary-600 bg-primary-50',
       iconBg: 'bg-primary-100 text-primary-600',
     },
     {
       icon: ClipboardList,
       label: 'Pending Review',
-      value: '9',
+      value: enrollmentStats?.pending.toString() || '0',
       status: 'Action Needed',
       statusColor: 'text-warning-600 bg-warning-50',
       iconBg: 'bg-warning-100 text-warning-600',
     },
     {
       icon: CheckCircle2,
-      label: 'Approval Rate',
-      value: '25%',
-      status: 'High',
+      label: 'Enrolled',
+      value: enrollmentStats?.approved.toString() || '0',
+      status: 'This Year',
       statusColor: 'text-success-600 bg-success-50',
       iconBg: 'bg-success-100 text-success-600',
     },
@@ -50,9 +63,9 @@ export default function Dashboard() {
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-secondary-400 text-sm font-medium uppercase tracking-wider">
               <div className="p-1 rounded border border-secondary-600">
-                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                <GraduationCap className="w-3 h-3" />
               </div>
-              Admin Portal
+              SSIS Admin
             </div>
             <h1 className="text-4xl font-heading font-bold">
               Welcome back, {profile?.first_name || user?.email?.split('@')[0] || 'Administrator'}!
@@ -63,18 +76,12 @@ export default function Dashboard() {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="relative hidden sm:block">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-secondary-400" />
-              <input
-                type="text"
-                placeholder="Search Records"
-                className="pl-9 pr-4 py-2.5 rounded-lg bg-white/10 border border-white/10 text-white placeholder:text-secondary-400 focus:bg-white/20 focus:outline-none transition-colors text-sm w-64"
-              />
-            </div>
-            <Button className="bg-white text-secondary-900 hover:bg-secondary-100 border-none shadow-none font-semibold">
-              <FileText className="w-4 h-4 mr-2" />
-              Review Applications
-            </Button>
+            <Link to="/enrollment">
+              <Button className="bg-white text-secondary-900 hover:bg-secondary-100 border-none shadow-none font-semibold">
+                <FileText className="w-4 h-4 mr-2" />
+                Review Applications
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -107,58 +114,94 @@ export default function Dashboard() {
         <div className="lg:col-span-2 space-y-6">
           <div className="flex items-center justify-between">
             <h3 className="text-xl font-bold text-secondary-900">Incoming Applications</h3>
-            <button className="text-sm font-medium text-primary-600 hover:text-primary-700">View All</button>
+            <Link to="/enrollment" className="text-sm font-medium text-primary-600 hover:text-primary-700">View All</Link>
           </div>
 
           <div className="space-y-4">
-            {[1, 2].map((_, i) => (
-              <Card key={i} className="p-4 border-none shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center font-bold">
-                      {i === 0 ? '2' : 'r'}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-bold text-secondary-900">{i === 0 ? '2' : 'r3wrwefew'}</h4>
-                        <span className="text-xs text-secondary-400">•</span>
-                        <span className="text-sm text-secondary-500">Arnhel Guinto</span>
-                      </div>
-                      <p className="text-sm text-secondary-500">{i === 0 ? 'renewal Application' : 'new Application'}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-6">
-                    <span className="text-sm text-secondary-400">1 day ago</span>
-                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-600">
-                      Submitted
-                    </span>
-                  </div>
+            {pendingEnrollments?.enrollments.length === 0 ? (
+              <Card className="p-8 border-none shadow-sm flex flex-col items-center justify-center text-center space-y-3">
+                <div className="p-3 bg-secondary-50 rounded-full">
+                  <CheckCircle2 className="w-6 h-6 text-secondary-400" />
                 </div>
+                <p className="text-secondary-500 font-medium">No pending applications</p>
+                <p className="text-sm text-secondary-400">All caught up! Check back later.</p>
               </Card>
-            ))}
+            ) : (
+              pendingEnrollments?.enrollments.slice(0, 5).map((enrollment) => (
+                <Card key={enrollment.id} className="p-4 border-none shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center font-bold uppercase text-sm">
+                        EN
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-bold text-secondary-900">
+                            Enrollment #{enrollment.id.slice(0, 8)}
+                          </h4>
+                          <span className="text-xs text-secondary-400">•</span>
+                          <span className="text-sm text-secondary-500">Student ID: {enrollment.user_id?.slice(0, 8) || 'N/A'}</span>
+                        </div>
+                        <p className="text-sm text-secondary-500">Enrollment Application</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-6">
+                      <span className="text-sm text-secondary-400">
+                        {enrollment.created_at ? formatDistanceToNow(new Date(enrollment.created_at), { addSuffix: true }) : 'Recently'}
+                      </span>
+                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-warning-50 text-warning-600 capitalize">
+                        {enrollment.status}
+                      </span>
+                    </div>
+                  </div>
+                </Card>
+              ))
+            )}
           </div>
         </div>
 
         {/* Quick Actions */}
         <div className="space-y-6">
           <h3 className="text-xl font-bold text-secondary-900">Quick Actions</h3>
-          <Card className="p-6 border-none shadow-sm relative overflow-hidden group cursor-pointer hover:shadow-md transition-all">
-            <div className="relative z-10">
-              <div className="flex items-start justify-between mb-4">
-                <div className="p-3 rounded-xl bg-primary-50 text-primary-600">
-                  <ClipboardList className="w-6 h-6" />
+          <Link to="/enrollment">
+            <Card className="p-6 border-none shadow-sm relative overflow-hidden group cursor-pointer hover:shadow-md transition-all">
+              <div className="relative z-10">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="p-3 rounded-xl bg-primary-50 text-primary-600">
+                    <ClipboardList className="w-6 h-6" />
+                  </div>
+                  <ArrowRight className="w-5 h-5 text-secondary-300 group-hover:text-primary-600 transition-colors" />
                 </div>
-                <ArrowRight className="w-5 h-5 text-secondary-300 group-hover:text-primary-600 transition-colors" />
+                <h4 className="text-lg font-bold text-secondary-900 mb-1">Review Applications</h4>
+                <p className="text-sm text-secondary-500">Process pending permit requests</p>
               </div>
-              <h4 className="text-lg font-bold text-secondary-900 mb-1">Review Applications</h4>
-              <p className="text-sm text-secondary-500">Process pending permit requests</p>
-            </div>
 
-            {/* Action Button */}
-            <div className="absolute bottom-4 right-4 w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-primary-600/30 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-              <ArrowRight className="w-5 h-5" />
-            </div>
-          </Card>
+              {/* Action Button */}
+              <div className="absolute bottom-4 right-4 w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-primary-600/30 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                <ArrowRight className="w-5 h-5" />
+              </div>
+            </Card>
+          </Link>
+
+          <Link to="/students">
+            <Card className="p-6 border-none shadow-sm relative overflow-hidden group cursor-pointer hover:shadow-md transition-all mt-4">
+              <div className="relative z-10">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="p-3 rounded-xl bg-success-50 text-success-600">
+                    <Users className="w-6 h-6" />
+                  </div>
+                  <ArrowRight className="w-5 h-5 text-secondary-300 group-hover:text-success-600 transition-colors" />
+                </div>
+                <h4 className="text-lg font-bold text-secondary-900 mb-1">Manage Students</h4>
+                <p className="text-sm text-secondary-500">View and edit student records</p>
+              </div>
+
+              {/* Action Button */}
+              <div className="absolute bottom-4 right-4 w-10 h-10 bg-success-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-success-600/30 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                <ArrowRight className="w-5 h-5" />
+              </div>
+            </Card>
+          </Link>
         </div>
       </div>
     </div>

@@ -60,19 +60,27 @@ export async function getCourseById(id: string) {
  * Get course statistics
  */
 export async function getCourseStats(): Promise<CourseStats> {
-  const { data, error } = await supabase
+  // Get subjects data
+  const { data: subjectsData, error: subjectsError } = await supabase
     .from('subjects')
     .select('category, enrolled_students')
 
-  if (error) throw error
+  if (subjectsError) throw subjectsError
 
-  const totalStudents = data?.reduce((sum, course) => sum + (course.enrolled_students || 0), 0) || 0
+  // Get actual student count from students table
+  const { count: studentCount, error: studentsError } = await supabase
+    .from('students')
+    .select('*', { count: 'exact', head: true })
+
+  if (studentsError) throw studentsError
+
+  const totalEnrollments = subjectsData?.reduce((sum, course) => sum + (course.enrolled_students || 0), 0) || 0
 
   const stats = {
-    totalCourses: data?.length || 0,
-    totalStudents,
-    coreSubjects: data?.filter(c => c.category === 'Core').length || 0,
-    avgEnrollment: data?.length ? Math.round(totalStudents / data.length) : 0,
+    totalCourses: subjectsData?.length || 0,
+    totalStudents: studentCount || 0,
+    coreSubjects: subjectsData?.filter(c => c.category === 'Core').length || 0,
+    avgEnrollment: subjectsData?.length ? Math.round(totalEnrollments / subjectsData.length) : 0,
   }
 
   return stats

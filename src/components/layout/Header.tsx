@@ -3,17 +3,17 @@ import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/store/authStore'
 
 interface HeaderProps {
-  toggleMobileSidebar: () => void
+  toggleMobileSidebar?: () => void
 }
 
-export function Header({ toggleMobileSidebar }: HeaderProps) {
+export function Header({ toggleMobileSidebar }: HeaderProps = {}) {
   const { signOut } = useAuthStore()
 
   return (
     <header className="h-16 bg-white border-b border-secondary-200 sticky top-0 z-40 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
       <div className="flex items-center gap-4">
         <button
-          onClick={toggleMobileSidebar}
+          onClick={() => toggleMobileSidebar?.()}
           className="lg:hidden p-2 text-secondary-500 hover:bg-secondary-100 rounded-lg"
         >
           <Menu className="w-6 h-6" />

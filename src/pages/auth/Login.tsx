@@ -242,7 +242,11 @@ export default function Login() {
                   <p className="text-xs text-secondary-500 mt-1.5 ml-1">Format: 09XXXXXXXXX</p>
                 </div>
 
-                <div className="flex items-center gap-3 px-1 py-2 rounded-lg hover:bg-secondary-50 transition-colors cursor-pointer" onClick={() => setUseOTP(!useOTP)}>
+                <div className="flex items-center gap-3 px-1 py-2 rounded-lg hover:bg-secondary-50 transition-colors cursor-pointer" onClick={() => {
+                  const newValue = !useOTP
+                  setUseOTP(newValue)
+                  phoneForm.setValue('useOTP', newValue)
+                }}>
                   <div className={cn("w-5 h-5 rounded border flex items-center justify-center transition-colors", useOTP ? "bg-primary-600 border-primary-600" : "border-secondary-300 bg-white")}>
                     {useOTP && <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
                   </div>

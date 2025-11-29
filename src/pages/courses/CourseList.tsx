@@ -4,11 +4,14 @@ import { Card } from '@/components/ui/card'
 import { Plus, Book, Users, Clock, Search, Grid, List, BookOpen, Award, TrendingUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useCourses, useCourseStats } from '@/lib/query/hooks'
+import { useRole } from '@/hooks/useRole'
 
 export default function CourseList() {
   const [searchQuery, setSearchQuery] = useState('')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [selectedCategory, setSelectedCategory] = useState('all')
+
+  const { canManage } = useRole()
 
   // Fetch data from Supabase
   const { data: coursesData, isLoading, error } = useCourses({
@@ -57,7 +60,7 @@ export default function CourseList() {
           <h1 className="text-3xl font-heading font-bold text-secondary-900">Courses</h1>
           <p className="text-secondary-600 mt-1">Manage course offerings and subjects</p>
         </div>
-        <Button leftIcon={<Plus size={20} />}>Add Course</Button>
+        {canManage && <Button leftIcon={<Plus size={20} />}>Add Course</Button>}
       </div>
 
       {/* Stats Cards */}

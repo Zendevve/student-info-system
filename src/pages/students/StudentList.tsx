@@ -1,9 +1,10 @@
 import { useState } from 'react'
+import { Plus, Search, Filter, Eye, Edit, Trash2, Download, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useStudents, useStudentStats } from '@/lib/query/hooks'
+import { useRole } from '@/hooks/useRole'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Plus, Search, Filter, Download, Eye, Edit2, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useStudents, useStudentStats } from '@/lib/query/hooks'
 
 export default function StudentList() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -13,7 +14,8 @@ export default function StudentList() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
 
-  // Fetch data from Supabase
+  const { canManage } = useRole()
+
   const { data: studentsData, isLoading, error } = useStudents({
     gradeLevel: selectedGrade,
     status: selectedStatus as any,
@@ -23,8 +25,6 @@ export default function StudentList() {
   const { data: stats, isLoading: statsLoading } = useStudentStats()
 
   const students = studentsData?.students || []
-  const totalCount = studentsData?.count || 0
-
   const totalPages = Math.ceil(students.length / itemsPerPage)
   const paginatedStudents = students.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
@@ -63,7 +63,7 @@ export default function StudentList() {
         </div>
         <div className="flex items-center gap-3">
           <Button variant="outline" leftIcon={<Download size={18} />}>Export</Button>
-          <Button leftIcon={<Plus size={20} />}>Add Student</Button>
+          {canManage && <Button leftIcon={<Plus size={20} />}>Add Student</Button>}
         </div>
       </div>
 
@@ -168,7 +168,7 @@ export default function StudentList() {
                 <th className="px-6 py-4 text-left text-xs font-semibold text-secondary-600 uppercase tracking-wider">LRN</th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-secondary-600 uppercase tracking-wider">Grade & Section</th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-secondary-600 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-4 text-right text-xs font-semibold text-secondary-600 uppercase tracking-wider">Actions</th>
+                {canManage && <th className="px-6 py-4 text-right text-xs font-semibold text-secondary-600 uppercase tracking-wider">Actions</th>}
               </tr>
             </thead>
             <tbody className="divide-y divide-secondary-200">
@@ -188,12 +188,12 @@ export default function StudentList() {
                     <td className="px-6 py-4"><div className="h-3 w-24 bg-secondary-200 rounded" /></td>
                     <td className="px-6 py-4"><div className="h-3 w-20 bg-secondary-200 rounded" /></td>
                     <td className="px-6 py-4"><div className="h-6 w-16 bg-secondary-200 rounded-full" /></td>
-                    <td className="px-6 py-4"><div className="h-8 w-20 bg-secondary-200 rounded ml-auto" /></td>
+                    {canManage && <td className="px-6 py-4"><div className="h-8 w-20 bg-secondary-200 rounded ml-auto" /></td>}
                   </tr>
                 ))
               ) : error ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center">
+                  <td colSpan={canManage ? 5 : 4} className="px-6 py-12 text-center">
                     <div className="flex flex-col items-center justify-center text-error-600">
                       <p className="text-sm font-medium">Error loading students</p>
                       <p className="text-xs mt-1">{error.message}</p>
@@ -202,7 +202,7 @@ export default function StudentList() {
                 </tr>
               ) : paginatedStudents.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center">
+                  <td colSpan={canManage ? 5 : 4} className="px-6 py-12 text-center">
                     <div className="flex flex-col items-center justify-center text-secondary-500">
                       <Search className="w-12 h-12 mb-3 text-secondary-300" />
                       <p className="text-sm font-medium">No students found</p>
@@ -242,19 +242,21 @@ export default function StudentList() {
                           {student.status || 'Active'}
                         </span>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button className="p-1.5 hover:bg-primary-50 text-primary-600 rounded-lg transition-colors" title="View">
-                            <Eye size={16} />
-                          </button>
-                          <button className="p-1.5 hover:bg-accent-50 text-accent-600 rounded-lg transition-colors" title="Edit">
-                            <Edit2 size={16} />
-                          </button>
-                          <button className="p-1.5 hover:bg-error-50 text-error-600 rounded-lg transition-colors" title="Delete">
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </td>
+                      {canManage && (
+                        <td className="px-6 py-4">
+                          <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button className="p-1.5 hover:bg-primary-50 text-primary-600 rounded-lg transition-colors" title="View">
+                              <Eye size={16} />
+                            </button>
+                            <button className="p-1.5 hover:bg-accent-50 text-accent-600 rounded-lg transition-colors" title="Edit">
+                              <Edit size={16} />
+                            </button>
+                            <button className="p-1.5 hover:bg-error-50 text-error-600 rounded-lg transition-colors" title="Delete">
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      )}
                     </tr>
                   )
                 })
