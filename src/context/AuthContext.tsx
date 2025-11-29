@@ -8,8 +8,8 @@ interface AuthContextType {
   signInWithEmail: (email: string, password: string) => Promise<{ error: Error | null }>
   signInWithPassword: (phone: string, password: string) => Promise<{ error: Error | null }>
   signInWithOTP: (phone: string) => Promise<{ error: Error | null }>
-  signUpWithEmail: (email: string, password: string, metadata: any) => Promise<{ error: Error | null }>
-  signOut: () => Promise<void>
+  signUp: (email: string, password: string, metadata: any) => Promise<{ error: Error | null }>
+  logout: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -49,7 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error }
   }
 
-  const signUpWithEmail = async (email: string, password: string, metadata: any) => {
+  const signUp = async (email: string, password: string, metadata: any) => {
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
@@ -73,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: null }
   }
 
-  const signOut = async () => {
+  const logout = async () => {
     await supabase.auth.signOut()
   }
 
@@ -83,8 +83,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signInWithEmail,
     signInWithPassword,
     signInWithOTP,
-    signUpWithEmail,
-    signOut,
+    signUp,
+    logout,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

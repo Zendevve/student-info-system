@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useAuth } from '@/context/AuthContext'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Mail, Phone, Lock, ArrowRight, ArrowLeft, UserPlus, GraduationCap } from 'lucide-react'
+import { Mail, Phone, Lock, ArrowRight, ArrowLeft, GraduationCap } from 'lucide-react'
 import { registerSchema, RegisterInput } from '@/lib/schema/auth'
 
 export default function Register() {
