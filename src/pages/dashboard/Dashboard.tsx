@@ -1,11 +1,9 @@
-import { useAuth } from '@/context/AuthContext'
-import { Users, FileText, CheckCircle2, AlertCircle, Search, ArrowRight, ClipboardList } from 'lucide-react'
+import { Users, FileText, CheckCircle2, Search, ArrowRight, ClipboardList } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
 export default function Dashboard() {
-  const { user } = useAuth()
 
   const stats = [
     {

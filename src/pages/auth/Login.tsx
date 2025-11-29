@@ -29,7 +29,7 @@ export default function Login() {
   })
 
   // Phone form
-  const phoneForm = useForm<LoginPhoneInput & { useOTP: boolean }>({
+  const phoneForm = useForm<LoginPhoneInput>({
     resolver: zodResolver(loginPhoneSchema),
     defaultValues: {
       phone: '',
