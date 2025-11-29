@@ -54,7 +54,9 @@ export default function Dashboard() {
               </div>
               Admin Portal
             </div>
-            <h1 className="text-4xl font-heading font-bold">Dashboard Overview</h1>
+            <h1 className="text-4xl font-heading font-bold">
+              Welcome back, {profile?.first_name || user?.email?.split('@')[0] || 'Administrator'}!
+            </h1>
             <p className="text-secondary-400">
               {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
