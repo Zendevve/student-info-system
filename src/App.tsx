@@ -36,6 +36,7 @@ function App() {
 
   return (
     <QueryProvider>
+      <Toaster position="top-right" richColors />
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
