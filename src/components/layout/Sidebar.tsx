@@ -4,7 +4,7 @@ import {
   GraduationCap, ChevronLeft, ChevronRight
 } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
-import { useAuth } from '@/context/AuthContext'
+import { useAuthStore } from '@/store/authStore'
 
 interface SidebarProps {
   isOpen: boolean
@@ -15,7 +15,7 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, isCollapsed, toggleCollapse, closeMobile }: SidebarProps) {
   const location = useLocation()
-  const { user } = useAuth()
+  const { user } = useAuthStore()
 
   const navItems = [
     { icon: Home, label: 'Dashboard', href: '/dashboard' },

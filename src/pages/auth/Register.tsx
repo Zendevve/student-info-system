@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useAuth } from '@/context/AuthContext'
+import { useAuthStore } from '@/store/authStore'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Mail, Phone, Lock, ArrowRight, ArrowLeft, GraduationCap } from 'lucide-react'
@@ -10,7 +10,7 @@ import { registerSchema, RegisterInput } from '@/lib/schema/auth'
 
 export default function Register() {
   const navigate = useNavigate()
-  const { signUp } = useAuth()
+  const { signUp } = useAuthStore()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 

@@ -2,8 +2,10 @@ import { Users, FileText, CheckCircle2, Search, ArrowRight, ClipboardList } from
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
+import { useAuthStore } from '@/store/authStore'
 
 export default function Dashboard() {
+  const { user, profile } = useAuthStore()
 
   const stats = [
     {

@@ -1,13 +1,13 @@
 import { Bell, Search, Menu, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useAuth } from '@/context/AuthContext'
+import { useAuthStore } from '@/store/authStore'
 
 interface HeaderProps {
   toggleMobileSidebar: () => void
 }
 
 export function Header({ toggleMobileSidebar }: HeaderProps) {
-  const { logout } = useAuth()
+  const { signOut } = useAuthStore()
 
   return (
     <header className="h-16 bg-white border-b border-secondary-200 sticky top-0 z-40 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
@@ -39,7 +39,7 @@ export function Header({ toggleMobileSidebar }: HeaderProps) {
         <Button
           variant="ghost"
           size="sm"
-          onClick={logout}
+          onClick={signOut}
           className="text-secondary-600 hover:text-error-600 hover:bg-error-50"
           leftIcon={<LogOut size={16} />}
         >

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useAuth } from '@/context/AuthContext'
+import { useAuthStore } from '@/store/authStore'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Mail, Phone, Lock, ArrowRight, ArrowLeft, ShieldCheck, GraduationCap, LayoutDashboard } from 'lucide-react'
@@ -13,7 +13,7 @@ type LoginMethod = 'phone' | 'email'
 
 export default function Login() {
   const navigate = useNavigate()
-  const { signInWithPassword, signInWithEmail, signInWithOTP } = useAuth()
+  const { signInWithPassword, signInWithEmail, signInWithOTP } = useAuthStore()
   const [loginMethod, setLoginMethod] = useState<LoginMethod>('email')
   const [useOTP, setUseOTP] = useState(false)
   const [error, setError] = useState('')
