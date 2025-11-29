@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Toaster } from 'sonner'
 import { useAuthStore } from '@/store/authStore'
 import { QueryProvider } from '@/lib/query/QueryProvider'
 import Login from '@/pages/auth/Login'
